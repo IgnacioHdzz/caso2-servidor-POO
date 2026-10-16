@@ -1,0 +1,12 @@
+# Windows / OneDrive
+desktop.ini
+Thumbs.db
+
+# Mac
+.DS_Store
+
+# Maven (archivos generados al compilar)
+target/
+
+# Java compilado
+*.class
