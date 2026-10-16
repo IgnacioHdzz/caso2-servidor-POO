@@ -8,7 +8,7 @@ Servidor de *Jungle Attack*, un juego de batalla jugador contra jugador ambienta
 
 El cliente está en el repositorio [`caso2-cliente-POO`](https://github.com/IgnacioHdzz/caso2-cliente-POO).
 
-> **Estado:** especificación de diseño (spec). Puede ajustarse durante la implementación.
+> **Estado:** especificación de diseño (spec).
 
 ## Diagrama de clases
 
@@ -302,27 +302,22 @@ classDiagram
 |---|---|---|
 | **Singleton** | `GestorPartidas` | Debe existir un solo gestor para que todas las conexiones encuentren las mismas partidas. Se usa una versión segura para hilos, porque varios clientes lo usan al mismo tiempo. |
 | **State** | `EstadoPartida` y sus 4 subclases, `SesionJuego` | La partida pasa por etapas (esperando rival → selección de especies → jugando → terminada) y cada etapa decide qué comandos acepta. |
-| **Mediator** | `SesionJuego`, `Jugador` | Los dos jugadores nunca se comunican directamente; la sesión coordina qué se le envía a cada uno. |
+| **Mediator** | `SesionJuego`, `Jugador` | Los dos jugadores nunca se comunican directamente, si no que la sesión coordina qué se le envía a cada uno. |
 | **Strategy** | `IBuscadorRutas`, `BuscadorBFS`, `BuscadorDijkstra` | El algoritmo para calcular rutas entre zonas se puede intercambiar sin tocar a quien lo usa. |
 | **Factory** | `FabricaManadas` | Concentra la creación de manadas de jugador y de bots en un solo lugar. |
 | **Builder** | `ConstructorMapa` | El mapa se arma en varios pasos (zonas, caminos, tazas, banderas) antes de entregarse completo. |
-| **Template Method** | `Animal.actualizar()` y `actuar()` | El paso común (avanzar por la ruta) se escribe una vez; cada subclase define cómo actúa. |
+| **Template Method** | `Animal.actualizar()` y `actuar()` | El paso común (avanzar por la ruta) se escribe una vez y cada subclase define cómo actúa. |
 
 Además, cada tipo de mensaje tiene su propio procesador (`IProcesadorMensaje`), y `DespachadorMensajes` lo busca en un mapa en lugar de usar un `switch` sobre el tipo.
 
 ### Herencia, interfaces y polimorfismo
 
-- **`Animal` → `AnimalJugador` y `AnimalBot`:** polimorfismo en `actuar()`. El bot ataca automáticamente a los enemigos en rango; el animal del jugador solo ataca el objetivo que el jugador le asigna.
+- **`Animal` → `AnimalJugador` y `AnimalBot`:** polimorfismo en `actuar()`. El bot ataca automáticamente a los enemigos en rango, mientras el animal del jugador solo ataca el objetivo que el jugador le asigna.
 - **`ElementoMapa` → `Animal`, `TazaCafe`, `Bandera`:** todo lo que ocupa una posición en el mapa.
-- **`IInteractuable` → `TazaCafe` y `Bandera`:** polimorfismo en `alSerTocado()`. La taza aumenta el daño de la manada; la bandera termina la partida.
+- **`IInteractuable` → `TazaCafe` y `Bandera`:** polimorfismo en `alSerTocado()`. La taza aumenta el daño de la manada, y la bandera termina la partida.
 - **`EstadoPartida` → 4 estados**, **`IProcesadorMensaje` → 6 procesadores** e **`IBuscadorRutas` → 2 algoritmos.**
 - **`ICanalCliente` → `ConexionCliente`:** la sesión envía mensajes sin depender directamente del socket.
 - Las 7 especies son un `enum`: tienen las mismas reglas y solo cambian su nombre e imagen. Lo que sí cambia de comportamiento (jugador vs. bot) se modela con herencia.
-
-### Uso de `static`
-
-- Las constantes de `Constantes`, el `main` y la instancia única de `GestorPartidas` (con su `getInstancia()`).
-- El resto son objetos con métodos de instancia. `Combate` y `MotorJuego` no son estáticos: cada partida tiene su propio motor.
 
 ### Hilos
 
