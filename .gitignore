@@ -10,3 +10,6 @@ target/
 
 # Java compilado
 *.class
+
+# VS Code
+.vscode/
