@@ -66,4 +66,8 @@ public final class Constantes {
     public static final String TEXTO_SIN_SALA = "Primero tenés que crear una partida o unirte a una.";
     public static final String TEXTO_RIVAL_ABANDONO = "Tu rival abandonó la partida.";
     public static final String TEXTO_TIPO_DESCONOCIDO = "Mensaje no reconocido.";
+        
+    // Textos de la consola del servidor
+    public static final String TEXTO_SERVIDOR_INICIADO = "Servidor escuchando en el puerto ";
+    public static final String TEXTO_ERROR_INICIO = "No se pudo iniciar el servidor en el puerto ";
 }
