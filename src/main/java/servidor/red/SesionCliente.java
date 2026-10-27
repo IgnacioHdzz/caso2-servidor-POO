@@ -9,11 +9,11 @@ import comun.red.IReceptorMensajes;
 import comun.red.LectorMensajes;
 import servidor.procesadores.DespachadorMensajes;
 import servidor.salas.Sala;
+import comun.protocolo.TipoMensaje;
+import comun.protocolo.datos.DatosError;
 
-/**
- * Un cliente conectado: su línea, sus hilos de lectura y escritura, su nickname
- * y la sala en la que está. Existe desde que se conecta hasta que se desconecta.
- */
+// Un cliente conectado, su línea, sus hilos de lectura y escritura, su nickname y la sala en la que está. Existe desde que se conecta hasta que se desconecta.
+
 public class SesionCliente implements IReceptorMensajes {
 
     private final Conexion conexion;
@@ -38,6 +38,11 @@ public class SesionCliente implements IReceptorMensajes {
     // Lo pueden llamar varios hilos, el mensaje queda en la cola del escritor. 
     public void enviar(Mensaje pMensaje) {
         escritor.enviar(pMensaje);
+    }
+
+    // Le responde un error a este cliente, con el texto dado. 
+    public void enviarError(String pTexto) {
+        enviar(new Mensaje(TipoMensaje.ERROR, new DatosError(pTexto)));
     }
 
     @Override
