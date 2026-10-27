@@ -13,6 +13,7 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <exec.mainClass>servidor.principal.MainServidor</exec.mainClass>
     </properties>
 
     <dependencies>
@@ -45,9 +46,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
-                <configuration>
-                    <mainClass>servidor.principal.MainServidor</mainClass>
-                </configuration>
             </plugin>
         </plugins>
     </build>
