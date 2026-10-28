@@ -32,13 +32,13 @@ public class PreparadorPartida {
             Jugador jugador = new Jugador(sesion, especie);
             comun.modelo.Zona zona = zonas.get(indice++);
             jugador.verZona(zona.getId());
-            servidor.modelo.Manada manada = fabrica.crearManadaJugador(especie, jugador, zona);
+            servidor.modelo.Manada manada = fabrica.crearManadaJugador(especie, jugador, zona, mapa);
             jugadores.add(jugador);
             manadas.add(manada);
             mapa.agregarBandera(new servidor.modelo.Bandera(jugador.getManada().getId(), zona.getCentro(), zona.getId(), manada));
         }
         for (Especie especie : Especie.values()) {
-            if (!usadas.contains(especie)) manadas.add(fabrica.crearManadaBot(especie, zonas.get(indice++)));
+            if (!usadas.contains(especie)) manadas.add(fabrica.crearManadaBot(especie, zonas.get(indice++), mapa));
         }
         return new Partida(mapa, manadas, jugadores, pAhoraMs);
     }
