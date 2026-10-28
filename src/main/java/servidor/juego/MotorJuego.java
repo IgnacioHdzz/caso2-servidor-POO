@@ -47,12 +47,28 @@ public class MotorJuego implements Runnable {
     // Una vuelta del juego. No es privado para poder probarlo sin el hilo.
     void tick(double pDeltaSegundos, long pAhoraMs) {
         partida.ejecutarComandosPendientes();
-        if (partida.estaTerminada()) return;
+        if (partida.estaTerminada() || verificarEliminacionTotal()) return;
         for (servidor.modelo.Animal animal : partida.getAnimalesVivos()) {
             animal.actualizar(pDeltaSegundos, pAhoraMs, partida, combate);
+            // Terminamos en cuanto cae el ultimo animal de un jugador.
+            if (partida.estaTerminada() || verificarEliminacionTotal()) return;
         }
         revisarInteracciones();
+        if (partida.estaTerminada() || verificarEliminacionTotal()) return;
         enviarEstados();
+    }
+
+    // Si una manada de jugador se queda sin animales vivos, gana su rival.
+    // Se comprueba desde el hilo del motor para no modificar la partida desde la red.
+    private boolean verificarEliminacionTotal() {
+        for (Jugador jugador : partida.getJugadores()) {
+            servidor.modelo.Manada manada = jugador.getManada();
+            if (manada != null && !manada.getMiembros().isEmpty() && manada.contarVivos() == 0) {
+                partida.declararGanador(partida.getRival(jugador));
+                return partida.estaTerminada();
+            }
+        }
+        return false;
     }
 
     private void revisarInteracciones() {
