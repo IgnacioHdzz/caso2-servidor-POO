@@ -21,8 +21,9 @@ public class BuscadorRutas {
         if (origen == null || destino == null) {
             return new Ruta(new ArrayList<>());
         }
-        if (origen.getId() == destino.getId()) {
-            return new Ruta(new ArrayList<>(List.of(pDestino)));
+         if (origen.getId() == destino.getId()) {
+            // Aun en la misma zona se pasa por el centro, para no atravesar la zona fuera de los caminos.
+            return new Ruta(new ArrayList<>(List.of(origen.getCentro(), pDestino)));
         }
 
         List<Zona> zonasRuta = dijkstra(pMapa, origen, destino);
@@ -37,6 +38,39 @@ public class BuscadorRutas {
         }
         puntos.add(pDestino);
         return new Ruta(puntos);
+    }
+
+    // El punto de los caminos de esa zona más cercano a pPunto (sin salir de la zona).
+    // Así los animales solo caminan por los caminos. Si no hay uno mejor, el centro de la zona.
+    public Posicion puntoMasCercanoEnCaminos(MapaBase pMapa, Posicion pPunto) {
+        Zona zona = pMapa.zonaDe(pPunto);
+        if (zona == null) {
+            return pPunto;
+        }
+        Posicion mejor = zona.getCentro();
+        double menorDistancia = mejor.distanciaA(pPunto);
+        for (Camino camino : pMapa.getCaminosDe(zona.getId())) {
+            Posicion candidato = proyectar(camino.getInicio(), camino.getFin(), pPunto);
+            double distancia = candidato.distanciaA(pPunto);
+            if (zona.contiene(candidato) && distancia < menorDistancia) {
+                menorDistancia = distancia;
+                mejor = candidato;
+            }
+        }
+        return mejor;
+    }
+
+    // El punto del segmento A-B más cercano a P (proyección, limitada a los extremos del segmento).
+    private Posicion proyectar(Posicion pA, Posicion pB, Posicion pP) {
+        double dx = pB.getX() - pA.getX();
+        double dy = pB.getY() - pA.getY();
+        double largoAlCuadrado = dx * dx + dy * dy;
+        if (largoAlCuadrado == 0) {
+            return pA;
+        }
+        double t = ((pP.getX() - pA.getX()) * dx + (pP.getY() - pA.getY()) * dy) / largoAlCuadrado;
+        t = Math.max(0, Math.min(1, t));
+        return new Posicion(pA.getX() + t * dx, pA.getY() + t * dy);
     }
 
     // Busca la ruta de menor distancia acumulada entre dos zonas.
