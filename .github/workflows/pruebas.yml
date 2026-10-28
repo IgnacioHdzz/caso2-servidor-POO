@@ -1,0 +1,23 @@
+name: Pruebas
+
+on: [push, pull_request]
+
+jobs:
+  pruebas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descargar la librería común
+        uses: actions/checkout@v4
+        with:
+          repository: IgnacioHdzz/caso2-comun-POO
+          path: comun
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Instalar la librería común
+        run: mvn -B install -DskipTests -f comun/pom.xml
+      - name: Correr las pruebas
+        run: mvn -B test
