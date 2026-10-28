@@ -21,12 +21,13 @@ public class ComandoMover extends Comando {
     public void ejecutar(Partida pPartida) {
         servidor.juego.Jugador jugador = pPartida.getJugadorDe(getSolicitante());
         if (jugador == null || jugador.getManada() == null || destino == null) return;
+        Posicion destinoEnCamino = pPartida.getBuscadorRutas().puntoMasCercanoEnCaminos(pPartida.getMapa(), destino);
         for (Integer id : idsAnimales) {
             if (id == null) continue;
             servidor.modelo.Animal animal = pPartida.buscarAnimal(id);
             if (animal == null || !animal.estaVivo() || animal.getManada() != jugador.getManada()) continue;
             servidor.mapa.Ruta ruta = pPartida.getBuscadorRutas().calcularRuta(
-                pPartida.getMapa(), animal.getPosicion(), destino);
+                pPartida.getMapa(), animal.getPosicion(), destinoEnCamino);
             if (!ruta.haTerminado()) animal.asignarRuta(ruta);
         }
     }

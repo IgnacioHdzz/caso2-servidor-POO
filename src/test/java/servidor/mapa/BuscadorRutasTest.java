@@ -22,12 +22,23 @@ class BuscadorRutasTest {
     }
 
     @Test
-    void mismaZonaUsaSoloDestino() {
+    void mismaZonaPasaPorElCentro() {
         Zona a = zona(0, 0, 0);
         Posicion destino = new Posicion(70, 80);
         Ruta ruta = buscador.calcularRuta(new MapaBase(List.of(a), List.of()), new Posicion(10, 10), destino);
-        assertEquals(1, ruta.getPuntos().size());
-        assertEquals(destino.getX(), ruta.siguientePunto().getX());
+        assertEquals(2, ruta.getPuntos().size());
+        assertEquals(a.getCentro().getX(), ruta.getPuntos().get(0).getX());
+        assertEquals(destino.getX(), ruta.getPuntos().get(1).getX());
+    }
+
+    @Test
+    void elDestinoSeAjustaAlCaminoMasCercano() {
+        Zona a = zona(0, 0, 0);
+        Zona b = zona(1, 100, 0);
+        MapaBase mapa = new MapaBase(List.of(a, b), List.of(camino(a, b, 100)));
+        Posicion ajustado = buscador.puntoMasCercanoEnCaminos(mapa, new Posicion(80, 90));
+        assertEquals(80, ajustado.getX());
+        assertEquals(50, ajustado.getY());
     }
 
     @Test

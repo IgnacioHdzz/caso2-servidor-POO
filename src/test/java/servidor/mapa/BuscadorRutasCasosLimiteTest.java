@@ -78,7 +78,7 @@ class BuscadorRutasCasosLimiteTest {
         Ruta dentro = buscador.calcularRuta(mapa, new Posicion(0, 30), new Posicion(50, 50));
         Ruta fuera = buscador.calcularRuta(mapa, new Posicion(100, 30), new Posicion(50, 50));
 
-        assertEquals(1, dentro.getPuntos().size());
+        assertEquals(2, dentro.getPuntos().size());
         assertTrue(fuera.haTerminado());
     }
 
