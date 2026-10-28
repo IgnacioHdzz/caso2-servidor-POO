@@ -26,6 +26,7 @@ public final class Constantes {
     // Movimiento (unidades del mapa por segundo)
     public static final double VELOCIDAD_ANIMAL = 80;
     public static final double SEPARACION_INICIAL = 25;
+    public static final double SEPARACION_EN_FILA = 22;
 
     // Tazas y banderas
     public static final int CANTIDAD_TAZAS = 10;
